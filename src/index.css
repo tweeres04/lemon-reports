@@ -1,0 +1,94 @@
+@import "tailwindcss";
+
+@theme {
+  --radius: 0.75rem;
+}
+
+@layer base {
+  :root {
+    /* Warm cream backgrounds (not pure white) */
+    --background: 45 33% 97%;        /* #F8F4E7 */
+    --foreground: 0 0% 10%;          /* #1A1A1A near-black */
+    
+    /* Cards - white on cream background */
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 10%;
+    
+    /* Popover */
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 10%;
+    
+    /* Primary accent - coral/terracotta */
+    --primary: 4 76% 61%;            /* #E85A4F */
+    --primary-foreground: 0 0% 100%;
+    
+    /* Secondary - slightly darker cream */
+    --secondary: 45 20% 92%;         /* #EBE8DB */
+    --secondary-foreground: 0 0% 10%;
+    
+    /* Muted */
+    --muted: 45 20% 92%;
+    --muted-foreground: 0 0% 42%;    /* #6B6B6B */
+    
+    /* Accent - muted teal */
+    --accent: 163 37% 61%;           /* #73C8AE */
+    --accent-foreground: 0 0% 10%;
+    
+    /* Destructive - deep red */
+    --destructive: 7 71% 47%;        /* #C93724 */
+    --destructive-foreground: 0 0% 100%;
+    
+    /* Borders - subtle */
+    --border: 0 0% 89.8%;
+    --input: 0 0% 89.8%;
+    --ring: 4 76% 61%;               /* Coral ring */
+    
+    /* Success - muted green */
+    --success: 156 47% 34%;          /* #2E7D5A */
+    --success-foreground: 0 0% 100%;
+    
+    /* Warning - warm amber */
+    --warning: 42 55% 58%;           /* #D4A853 */
+    --warning-foreground: 0 0% 10%;
+  }
+
+  .dark {
+    --background: 0 0% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 0 0% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 0 0% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 0 0% 98%;
+    --primary-foreground: 0 0% 9%;
+    --secondary: 0 0% 14.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 0 0% 14.9%;
+    --muted-foreground: 0 0% 63.9%;
+    --accent: 0 0% 14.9%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 14.9%;
+    --input: 0 0% 14.9%;
+    --ring: 0 0% 83.1%;
+  }
+}
+
+@layer base {
+  * {
+    border-color: hsl(var(--border));
+  }
+  body {
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+    font-family: 'Poppins', system-ui, -apple-system, sans-serif;
+    line-height: 1.6;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+  }
+}
