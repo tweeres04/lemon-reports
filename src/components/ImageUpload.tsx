@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Upload, X, Clipboard } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { compressImage } from '@/lib/image-utils';
 
 interface ImageUploadProps {
   images: string[];
@@ -17,20 +18,33 @@ export default function ImageUpload({ images, onChange, label }: ImageUploadProp
   const handleFileSelect = async (files: FileList | null) => {
     if (!files) return;
 
+    const imageFiles = Array.from(files).filter(file => file.type.startsWith('image/'));
+    if (imageFiles.length === 0) return;
+
     const newImages: string[] = [];
-    for (let i = 0; i < files.length; i++) {
-      const file = files[i];
-      if (file.type.startsWith('image/')) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          const result = e.target?.result as string;
-          newImages.push(result);
-          if (newImages.length === files.length) {
+    
+    for (const file of imageFiles) {
+      const reader = new FileReader();
+      reader.onload = async (e) => {
+        const result = e.target?.result as string;
+        try {
+          const compressed = await compressImage(result);
+          newImages.push(compressed);
+          
+          // Once all images are processed, update state
+          if (newImages.length === imageFiles.length) {
             onChange([...images, ...newImages]);
           }
-        };
-        reader.readAsDataURL(file);
-      }
+        } catch (error) {
+          console.error('Failed to compress image:', error);
+          // Still add the original if compression fails
+          newImages.push(result);
+          if (newImages.length === imageFiles.length) {
+            onChange([...images, ...newImages]);
+          }
+        }
+      };
+      reader.readAsDataURL(file);
     }
   };
 
@@ -42,9 +56,16 @@ export default function ImageUpload({ images, onChange, label }: ImageUploadProp
           if (type.startsWith('image/')) {
             const blob = await item.getType(type);
             const reader = new FileReader();
-            reader.onload = (e) => {
+            reader.onload = async (e) => {
               const result = e.target?.result as string;
-              onChange([...images, result]);
+              try {
+                const compressed = await compressImage(result);
+                onChange([...images, compressed]);
+              } catch (error) {
+                console.error('Failed to compress pasted image:', error);
+                // Still add the original if compression fails
+                onChange([...images, result]);
+              }
             };
             reader.readAsDataURL(blob);
           }

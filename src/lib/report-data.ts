@@ -124,8 +124,17 @@ export const getDefaultReportData = (): ReportData => ({
 // LocalStorage helpers
 const STORAGE_KEY = 'lemon-report-data';
 
-export const saveReportData = (data: ReportData) => {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+export const saveReportData = (data: ReportData): boolean => {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    return true;
+  } catch (e) {
+    console.error('Failed to save report data:', e);
+    if (e instanceof DOMException && e.name === 'QuotaExceededError') {
+      console.error('localStorage quota exceeded. Consider removing some images.');
+    }
+    return false;
+  }
 };
 
 export const loadReportData = (): ReportData => {
