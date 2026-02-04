@@ -211,62 +211,63 @@ export default function ReportPDF({ data }: ReportPDFProps) {
       : { name: "circleCheck", color: "#2E7D5A" }; // Green for all passed
     
     return (
-      <View 
-        style={styles.section}
-        wrap={false}
-      >
-        <View style={styles.sectionTitle}>
-          <PdfIcon
-            name={iconData.name as any}
-            size={14}
-            color={iconData.color}
-            style={styles.titleIcon}
-          />
-          <Text>{section.title}</Text>
-        </View>
-
-      {section.items.map((item, index) => (
-        <View key={index}>
-          <View style={styles.checklistItem}>
-            <View style={styles.checkbox}>
-              <PdfIcon
-                name={item.checked ? "squareCheck" : "square"}
-                size={14}
-                color={item.checked ? "#2E7D5A" : "#C93724"}
-              />
-            </View>
-            <Text
-              style={
-                !item.checked 
-                  ? [styles.itemText, styles.itemTextUnchecked]
-                  : styles.itemText
-              }
-            >
-              {item.label}
-              {!item.checked && " (see deficiencies below)"}
-            </Text>
+      <View style={styles.section}>
+        {/* Keep title and checklist items together */}
+        <View wrap={false}>
+          <View style={styles.sectionTitle}>
+            <PdfIcon
+              name={iconData.name as any}
+              size={14}
+              color={iconData.color}
+              style={styles.titleIcon}
+            />
+            <Text>{section.title}</Text>
           </View>
-          {!item.checked && item.note && (
-            <Text style={styles.note}>{item.note}</Text>
+
+          {section.items.map((item, index) => (
+            <View key={index}>
+              <View style={styles.checklistItem}>
+                <View style={styles.checkbox}>
+                  <PdfIcon
+                    name={item.checked ? "squareCheck" : "square"}
+                    size={14}
+                    color={item.checked ? "#2E7D5A" : "#C93724"}
+                  />
+                </View>
+                <Text
+                  style={
+                    !item.checked 
+                      ? [styles.itemText, styles.itemTextUnchecked]
+                      : styles.itemText
+                  }
+                >
+                  {item.label}
+                  {!item.checked && " (see deficiencies below)"}
+                </Text>
+              </View>
+              {!item.checked && item.note && (
+                <Text style={styles.note}>{item.note}</Text>
+              )}
+            </View>
+          ))}
+
+          {section.otherNotes && (
+            <View style={styles.otherNotes}>
+              <Text style={{ fontWeight: "bold", marginBottom: 4 }}>Other:</Text>
+              <Text>{section.otherNotes}</Text>
+            </View>
           )}
         </View>
-      ))}
 
-      {section.otherNotes && (
-        <View style={styles.otherNotes}>
-          <Text style={{ fontWeight: "bold", marginBottom: 4 }}>Other:</Text>
-          <Text>{section.otherNotes}</Text>
-        </View>
-      )}
-
-      {section.images.length > 0 && (
-        <View style={styles.imageGrid}>
-          {section.images.map((img, idx) => (
-            <Image key={idx} src={img} style={styles.image} />
-          ))}
-        </View>
-      )}
-    </View>
+        {/* Images can break across pages */}
+        {section.images.length > 0 && (
+          <View style={styles.imageGrid}>
+            {section.images.map((img, idx) => (
+              <Image key={idx} src={img} style={styles.image} />
+            ))}
+          </View>
+        )}
+      </View>
     );
   };
 
@@ -310,30 +311,39 @@ export default function ReportPDF({ data }: ReportPDFProps) {
 
         {/* Deficiencies */}
         {data.deficiencies.length > 0 && (
-          <View style={styles.section} wrap={false}>
-            <View style={styles.sectionTitle}>
-              <PdfIcon
-                name="circleX"
-                size={14}
-                color="#C93724"
-                style={styles.titleIcon}
-              />
-              <Text>Noted Deficiencies</Text>
+          <View style={styles.section}>
+            {/* Keep title with first deficiency */}
+            <View wrap={false}>
+              <View style={styles.sectionTitle}>
+                <PdfIcon
+                  name="circleX"
+                  size={14}
+                  color="#C93724"
+                  style={styles.titleIcon}
+                />
+                <Text>Noted Deficiencies</Text>
+              </View>
             </View>
 
             {data.deficiencies.map((deficiency, index) => (
-              <View key={deficiency.id} style={styles.deficiencyContainer} wrap={false}>
-                <Text style={styles.deficiencyTitle}>
-                  {index + 1}. {deficiency.title}
-                </Text>
-                <Text style={styles.deficiencyDescription}>
-                  {deficiency.description}
-                </Text>
+              <View key={deficiency.id}>
+                {/* Keep deficiency title and description together */}
+                <View style={styles.deficiencyContainer} wrap={false}>
+                  <Text style={styles.deficiencyTitle}>
+                    {index + 1}. {deficiency.title}
+                  </Text>
+                  <Text style={styles.deficiencyDescription}>
+                    {deficiency.description}
+                  </Text>
+                </View>
+                {/* Images can break across pages */}
                 {deficiency.images.length > 0 && (
-                  <View style={styles.imageGrid}>
-                    {deficiency.images.map((img, idx) => (
-                      <Image key={idx} src={img} style={styles.image} />
-                    ))}
+                  <View style={[styles.deficiencyContainer, { paddingTop: 0, marginTop: -12 }]}>
+                    <View style={styles.imageGrid}>
+                      {deficiency.images.map((img, idx) => (
+                        <Image key={idx} src={img} style={styles.image} />
+                      ))}
+                    </View>
                   </View>
                 )}
               </View>
