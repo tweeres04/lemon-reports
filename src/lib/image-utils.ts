@@ -1,14 +1,14 @@
 /**
  * Compresses an image by resizing and reducing quality
  * @param base64 - The base64 encoded image string
- * @param maxWidth - Maximum width in pixels (default: 1920)
- * @param quality - JPEG quality 0-1 (default: 0.8)
+ * @param maxWidth - Maximum width in pixels (default: 1024)
+ * @param quality - JPEG quality 0-1 (default: 0.7)
  * @returns Promise resolving to compressed base64 string
  */
 export async function compressImage(
   base64: string,
-  maxWidth = 1920,
-  quality = 0.8
+  maxWidth = 1024,
+  quality = 0.7
 ): Promise<string> {
   return new Promise((resolve, reject) => {
     const img = new Image();
